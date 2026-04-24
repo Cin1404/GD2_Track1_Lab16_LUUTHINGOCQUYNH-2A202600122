@@ -1,0 +1,358 @@
+# Day 16 Submission — Advanced Version  
+- Lưu Thị Ngọc Quỳnh - 2A202600122
+
+---
+
+## 1. Idea reframed
+
+Original idea:  
+> Xây dựng một công cụ AI hỗ trợ đội vận hành chuỗi bán lẻ điều phối tồn kho giữa nhiều cửa hàng, nhằm giảm thiếu hàng và tồn dư.
+
+---
+
+### Reframed as a product opportunity (advanced version):
+
+> Đội vận hành chuỗi bán lẻ hiện nay không chỉ đối mặt với bài toán thiếu dữ liệu, mà thực chất đang gặp vấn đề về **độ trễ trong ra quyết định (decision latency)** và **chất lượng quyết định (decision quality)** khi điều phối tồn kho giữa nhiều điểm bán.
+>
+> Trong bối cảnh quy mô bán lẻ đa kênh tăng nhanh, số lượng SKU lớn và nhu cầu biến động theo thời gian thực, việc ra quyết định điều chuyển tồn kho không còn đơn giản là đọc báo cáo, mà đòi hỏi khả năng:
+> - phát hiện sớm tín hiệu rủi ro
+> - đánh giá trade-off giữa nhiều phương án
+> - và hành động kịp thời trước khi doanh thu bị ảnh hưởng
+>
+> Tuy nhiên, thực tế cho thấy:
+> - dữ liệu bán hàng, tồn kho và nhu cầu vẫn phân tán
+> - các dashboard hiện tại chỉ cung cấp thông tin tĩnh
+> - quyết định vẫn phụ thuộc nhiều vào kinh nghiệm cá nhân
+>
+> Điều này dẫn đến một nghịch lý: **có dữ liệu nhưng không ra được quyết định kịp thời**.
+
+---
+
+### Opportunity nâng cấp:
+
+> Cơ hội sản phẩm không nằm ở việc xây thêm dashboard hay mô hình dự báo, mà là xây dựng một **AI Decision Copilot for Inventory Operations**, có khả năng:
+>
+> 1. Phát hiện sớm các tín hiệu bất thường (early risk detection)
+> 2. Đề xuất hành động cụ thể (actionable recommendation)
+> 3. Ước lượng tác động của từng phương án (impact simulation)
+> 4. Học từ kết quả quyết định thực tế (learning loop)
+
+---
+
+### Founding belief (advanced):
+
+> Với một workflow mang tính vận hành cao và phụ thuộc nhiều vào con người như điều phối tồn kho, AI tạo giá trị lớn nhất khi:
+>
+> - đóng vai trò **decision support trước**
+> - sau đó mới tiến tới **automation có kiểm soát**
+>
+> Thay vì thay thế con người, AI nên giúp con người:
+> - ra quyết định sớm hơn
+> - tự tin hơn
+> - và nhất quán hơn
+
+---
+
+## 2. Customer/Segment Card
+
+- **Segment name:** Nhân viên vận hành chuỗi bán lẻ (Retail Operations / Inventory Planner)
+
+---
+
+### Operational context
+
+Người dùng chịu trách nhiệm:
+- theo dõi doanh số theo từng cửa hàng
+- kiểm soát tồn kho theo SKU
+- ra quyết định điều chuyển giữa các điểm bán
+
+Dữ liệu:
+- đến từ nhiều nguồn (POS, ERP, Excel)
+- cập nhật liên tục
+- không đồng nhất
+
+---
+
+### Recurring workflow
+
+1. Kiểm tra báo cáo bán hàng
+2. Phát hiện nơi thiếu hoặc dư hàng
+3. So sánh giữa các cửa hàng
+4. Quyết định điều chuyển
+5. Theo dõi kết quả (thường không có hệ thống rõ ràng)
+
+---
+
+### Pain moment
+
+> Cửa hàng A hết hàng đúng lúc nhu cầu tăng, trong khi cửa hàng B vẫn còn tồn, nhưng không phát hiện và xử lý kịp thời.
+
+---
+
+### Behavioral insight (NEW)
+
+> Người dùng không thiếu dữ liệu, mà thiếu **sự tự tin để hành động nhanh**, do:
+- sợ quyết định sai
+- thiếu thông tin đầy đủ
+- không rõ hậu quả của từng phương án
+
+---
+
+### Why now
+
+- AI đã đủ tốt để:
+  - dự báo nhu cầu ngắn hạn
+  - phát hiện pattern bất thường
+  - gợi ý phương án tối ưu
+- hạ tầng dữ liệu trong bán lẻ ngày càng hoàn thiện
+
+---
+
+### Access path
+
+- tích hợp vào dashboard nội bộ
+- hoặc plugin vào hệ thống POS/ERP hiện có
+
+---
+
+### One-sentence description
+
+> Đây là người mỗi ngày phải ra hàng chục quyết định điều chuyển tồn kho, và AI giúp họ ra quyết định nhanh hơn, chính xác hơn và tự tin hơn.
+
+---
+
+## 3. Need Map
+
+### Need #1 (priority) — Early detection + action
+
+- **Statement (JTBD):**  
+Khi tôi quản lý tồn kho cho nhiều cửa hàng, tôi muốn phát hiện sớm nguy cơ thiếu hoặc dư hàng và biết nên làm gì ngay lập tức, để tránh mất doanh thu.
+
+- **Current workaround:**  
+Kiểm tra báo cáo thủ công mỗi ngày
+
+- **Pain signal:**  
+Phát hiện quá muộn khi vấn đề đã xảy ra
+
+- **Why underserved:**  
+Dashboard chỉ hiển thị dữ liệu, không đưa ra hành động
+
+---
+
+### Need #2 — Decision recommendation (advanced)
+
+- **Statement (JTBD):**  
+Khi nhu cầu thay đổi giữa các cửa hàng, tôi muốn biết:
+- chuyển từ đâu → sang đâu  
+- chuyển bao nhiêu  
+- nếu không chuyển sẽ mất bao nhiêu  
+
+- **Pain signal:**  
+Quyết định dựa vào cảm tính
+
+- **Why underserved:**  
+Chưa có hệ thống hỗ trợ decision-level
+
+---
+
+### Need #3 — Unified decision workspace
+
+- **Statement:**  
+Tôi muốn có một nơi duy nhất để:
+- xem dữ liệu
+- nhận gợi ý
+- ra quyết định
+
+---
+
+### Need #4 — Learning loop (NEW)
+
+- **Statement:**  
+Hệ thống cần học từ:
+- quyết định đã được chấp nhận
+- quyết định bị từ chối
+- kết quả thực tế
+
+---
+
+## 4. Strategy Statement
+
+For **nhân viên vận hành chuỗi bán lẻ**  
+who struggle with **ra quyết định điều phối tồn kho chậm và chưa tối ưu**,  
+
+our product helps them  
+**giảm độ trễ quyết định và nâng cao chất lượng quyết định**,  
+
+through  
+**một AI decision copilot tích hợp trực tiếp vào workflow vận hành**,  
+
+unlike  
+**dashboard tĩnh hoặc báo cáo thủ công**,  
+
+because we leverage  
+**dữ liệu vận hành + decision history + feedback loop từ thực tế**.
+
+---
+
+## 5. Moat Hypothesis
+
+### Moat mechanism: Decision Intelligence Flywheel
+
+#### Loop:
+
+1. Forecast demand  
+2. Detect risk  
+3. Recommend action  
+4. User decision  
+5. Outcome  
+6. Learning  
+
+---
+
+### Why strong moat
+
+> Giá trị không nằm ở model, mà ở:
+- decision history
+- outcome data
+- behavior của từng chain
+
+---
+
+### Switching cost
+
+- mất toàn bộ learning history
+- mất model đã được calibrate
+- mất integration vào workflow
+
+---
+
+## 6. Initial TAM / SAM / SOM view
+
+### Assumptions
+
+- Pricing: USD 600/store/năm
+- Target: retail chain có dữ liệu số hóa
+
+---
+
+### TAM
+
+- 11,053 stores  
+→ TAM ≈ USD 6.6M ARR
+
+---
+
+### SAM
+
+- 5,138 stores (HN + HCM)  
+- 70% readiness  
+
+→ SAM ≈ USD 2.16M ARR
+
+---
+
+### SOM
+
+- 6 chains × 120 stores  
+
+→ SOM ≈ USD 0.43M ARR
+
+---
+
+### Expansion strategy (NEW)
+
+- Phase 1: per store pricing  
+- Phase 2: per SKU / usage  
+- Phase 3: value-based pricing  
+
+---
+
+### Risks (NEW)
+
+1. Data quality không đủ tốt  
+2. User không trust AI  
+3. Integration khó  
+
+---
+
+## 7. Positioning Note
+
+### What we are
+
+> AI Decision Copilot cho vận hành tồn kho bán lẻ
+
+---
+
+### What we are not
+
+- Không phải dashboard  
+- Không phải tool forecasting đơn lẻ  
+- Không phải hệ thống tự động hoàn toàn  
+
+---
+
+## 8. System Thinking (NEW)
+
+### End-to-end flow
+
+Data → Feature → Forecast → Risk → Recommendation → Decision → Outcome → Learning
+
+---
+
+### Key differentiation
+
+> Không dừng ở “predict”  
+→ mà đi đến **decision + outcome**
+
+---
+
+## 9. Metrics (NEW)
+
+### Product metrics
+
+- Stockout reduction (%)  
+- Overstock reduction (%)  
+- Decision latency  
+- Acceptance rate  
+
+---
+
+### Business metrics
+
+- Revenue uplift  
+- Cost saving  
+- Inventory turnover  
+
+---
+
+## 10. Go-to-market (NEW)
+
+### Beachhead
+
+- Convenience store  
+- Pharmacy chain  
+
+---
+
+### Strategy
+
+1. Pilot nhỏ  
+2. Prove ROI  
+3. Expand theo chain  
+
+---
+
+## Final Judgment
+
+- [x] Worth pursuing now  
+
+---
+
+## Kết luận
+
+So với cách tiếp cận truyền thống, giải pháp này chuyển trọng tâm từ:
+- **data → insight**
+sang:
+- **data → decision → outcome**
+
+Điều này không chỉ giúp cải thiện hiệu quả vận hành, mà còn tạo ra lợi thế cạnh tranh bền vững thông qua learning loop từ thực tế.
